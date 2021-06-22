@@ -135,11 +135,11 @@ class Api{
     public function GetKategori($post) {
         $db = new Database();
 	    $db->open();
-        $query = "SELECT * FROM `kategori` WHERE 1=1 ";
+        $query = "SELECT ID,nama,foto FROM `kategori` WHERE aktif=1";
         if(isset($post['nama'])) {
           $query .= " AND nama LIKE '%$post[nama]%'";
         }
-        $data = $db->get($query);
+        $data = $db->get($query . "  ORDER BY urutan ASC");
         $db->close();
 	    return $this->_result('00', $data, 'Sukses');
     }
@@ -229,14 +229,14 @@ class Api{
     public function GetKonten($post) {
       $db = new Database();
     $db->open();
-      $query = "SELECT * FROM `konten` WHERE 1=1 ";
+      $query = "SELECT ID,nama,tipe_konten,link,foto,deskripsi,isi_konten FROM `konten` WHERE aktif=1 ";
       if(isset($post['kategori'])) {
         $query .= " AND kategori=$post[kategori]";
       }
       if(isset($post['nama'])) {
         $query .= " AND nama LIKE '%$post[nama]%'";
       }
-      $data = $db->get($query);
+      $data = $db->get($query."  ORDER BY urutan ASC");
       $db->close();
     return $this->_result('00', $data, 'Sukses');
   }
@@ -300,11 +300,17 @@ class Api{
       if(isset($post['deskripsi'])){
         $query .= " `deskripsi` = '$post[deskripsi]', ";
       }
+      if(isset($post['kategori'])){
+        $query .= " `kategori` = $post[kategori], ";
+      }
       if(isset($post['link'])){
-        $query .= " `link` = '$post[deskripsi]', ";
+        $query .= " `link` = '$post[link]', ";
       }
       if(isset($post['isi_konten'])){
         $query .= " `isi_konten` = '$post[isi_konten]', ";
+      }
+      if(isset($post['tipe_konten'])){
+        $query .= " `tipe_konten` = '$post[tipe_konten]', ";
       }
       if(isset($post['updated_by'])){
           $query .= " `updated_by` = $post[updated_by], ";
